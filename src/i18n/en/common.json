@@ -1,0 +1,187 @@
+{
+  "auth": {
+    "errors": {
+      "missingOrInvalidHeader": "Authorization header is missing or invalid.",
+      "tokenNotFound": "Authentication token not found.",
+      "tokenBlacklisted": "The provided token is blacklisted.",
+      "invalidToken": "The token provided is invalid or expired.",
+      "adminNotFound": "Admin not found.",
+      "userNotFound": "Unauthorized: User not found",
+      "roleUnauthorized": "Unauthorized: You must have one of the following roles: {{args.roles}}.",
+      "INVALIDE_INCREDENTIAL": "Login failed. Please check your email and password and try again"
+    }
+  },
+
+  "Success": "Success",
+  "INTERNAL_SERVER_ERROR": "Internal Server Error",
+  "Unauthorized": "Login failed. Please check your email and password and try again",
+  "DUPLICATE_SKU": "SKU already exists. Please use a unique SKU.",
+  "isNotEmpty": "This field cannot be empty",
+  "isEmail": "Invalid email format",
+  "isString": "This field must be a string",
+  "isInt": "This field must be an integer",
+  "isBoolean": "This field must be a boolean",
+  "isDateString": "This field must be a valid date string",
+  "isNumber": "This field must be a number",
+  "minLength": "This field must be at least {min} characters long",
+  "maxLength": "This field must be no longer than {max} characters",
+  "isOptional": "This field is optional",
+  "isUUID": "This field must be a valid UUID",
+  "min": "This field must be at least {min}",
+  "max": "This field must be no more than {max}",
+  "matches": "This field must match the required pattern",
+  "Please upload an icon": "Please upload an icon",
+
+  "SUCCESS": "Success",
+  "FAILED": "Failed",
+  "EMAIL_EXIST": "This Email is used by another user",
+  "USER_NAME_EXIST": "This user name is used by another user",
+  "isObject": "This field must be an object",
+  "isEnum": "This field must be one of the following values: {values}",
+  "VERIFICATION": {
+    "SEND_CODE": "We send the code, check your email please .",
+    "VERIFICATION_TIMEOUT": "verification timeout, resend verification code again",
+    "VERIFICATION_CODE_NOT_CORRECT": "Vericicarion code not correct",
+    "VERIFICATION_SUCCEFULL": "Vericicarion successfully"
+  },
+  "IMAGE": {
+    "AT_LEAST_IMAGE_ONE": "You must send at least one image."
+  },
+  "USER": {
+    "OTP_SENT": "OTP sent successfully",
+    "OTP_VERIFIED": "OTP verified successfully",
+    "INVALID_PHONE_NUMBER": "Invalid phone number",
+    "INACTIVE_ACCOUNT": "Your account is inactive",
+    "INVALID_OTP": "Invalid OTP",
+    "NOT_FOUND": "User not found",
+    "PROFILE_COMPLETED": "Profile completed successfully",
+    "LOGGED_IN": "User logged in successfully",
+    "CREATED": "User created successfully"
+  },
+  "ADMIN": {
+    "UPDATED": "Admin updated successfully",
+    "NOT_FOUND": "Admin Not Found",
+    "SAME_DATA": "You Dont send any update data "
+  },
+  "PACKAGE": {
+    "NOT_FOUND": "Package not found",
+    "INACTIVE": "Package is inactive",
+    "WORKING_DAY_NOT_FOUND": "Selected date is not a working day",
+    "NO_TIME_SLOTS_AVAILABLE": "No time slots available"
+  },
+  "ORDER": {
+    "TIME_SLOT_NOT_AVAILABLE": "Selected time slot is not available",
+    "PAST_DATE": "Cannot book a past date",
+    "NOT_FOUND": "Order not found",
+    "CREATED": "Order created successfully",
+    "CANCELLED": "Order cancelled successfully",
+    "ALREADY_CANCELLED": "Order is already cancelled",
+    "CANNOT_CANCEL": "Cannot cancel the order",
+    "UPDATED": "Order updated successfully",
+    "CANNOT_UPDATE": "Cannot update the order"
+  },
+  "BLOG": {
+    "CREATED": "Blog created successfully",
+    "UPDATED": "Blog updated successfully",
+    "DELETED": "Blog deleted successfully",
+    "NOT_FOUND": "Blog not found"
+  },
+  "PASSWORD": {
+    "UPDATED": "Password updated successfully",
+    "NOT_FOUND": "Password not found",
+    "CURRNET_PASSWROD_NOT_CORRECT": "Current password not correct",
+    "NEW_PASSWORD_NOT_DIFFERENT_OLD_PASSWORD": "New password not different old password"
+  },
+  "ADDRESS": {
+    "CREATED": "Address created successfully",
+    "UPDATED": "Address updated successfully",
+    "REMOVED": "Address deleted successfully",
+    "NOT_FOUND": "Not Found Address"
+  },
+  "CATEGORY": {
+    "CREATED": "Category created successfully",
+    "UPDATED": "Category updated successfully",
+    "DELETED": "Category deleted successfully",
+    "NOT_FOUND": "Category not found"
+  },
+
+  "PRODUCT": {
+    "CREATED": "Product created successfully",
+    "UPDATED": "Product updated successfully",
+    "DELETED": "Product deleted successfully",
+    "NOT_FOUND": "Product not found",
+    "OUT_OF_STOCK": "Product is out of stock",
+    "ALREADY_IN_FAVORITE": "Product its already exist in wishlist",
+    "NOT_FOUND_IN_VAVORITE": "Product not found in wishlist"
+  },
+  "VENDOR": {
+    "CREATED": "Vendor created successfully",
+    "UPDATED": "Vendor updated successfully",
+    "DELETED": "Vendor deleted successfully",
+    "NOT_FOUND": "Vendor not found",
+    "UPDATE_STATUS": "Vendor updated status successfully",
+    "SAME_STATUS": "This status is the current status for this vendor.",
+    "UPDATED_BLOCK": "Vendor Update Block",
+    "SAME_BLOCKED": "This block status is the current block status for this vendor."
+  },
+  "BRAND": {
+    "CREATED": "Brand created successfully",
+    "UPDATED": "Brand updated successfully",
+    "DELETED": "Brand deleted successfully",
+    "NOT_FOUND": "Brand not found",
+    "UPDATE_STATUS": "Brand updated status successfully",
+    "SAME_STATUS": "This status is the current status forr this brand.",
+    "WITH_THIS_NAME_EXIST": "A brand with this name already exists."
+  },
+  "REVIEW": {
+    "CREATED": "Review created successfully",
+    "UPDATED": "Review updated successfully",
+    "DELETED": "Review deleted successfully",
+    "NOT_FOUND": "Review not found",
+    "EXIST_FOR_THIS_PRDOUCT": "Review exist for this product",
+    "EXIST_FOR_THIS_VENDOR": "Review exist for this vendor",
+    "USER_NOT_AUTHORIZED": "This Review Not for you , you cant update it."
+  },
+  "CART": {
+    "ITEM_ADDED": "Item added to cart",
+    "ITEM_REMOVED": "Item removed from cart",
+    "UPDATED": "Cart updated successfully",
+    "EMPTY": "Cart is empty",
+    "NOT_FOUND": "Cart not found",
+    "CONVERT_FROM_DEVICE_TO_ACCOUNT_SUCCESS": "Your cart has been successfully transferred from your device to your account"
+  },
+  "CART_ITEM": {
+    "ADDED": "Item added to cart successfully",
+    "UPDATED": "Cart item updated successfully",
+    "REMOVED": "Item removed from cart successfully",
+    "NOT_FOUND": "Cart item not found"
+  },
+  "FAVORITE": {
+    "ADDED": "Added to favorites",
+    "REMOVED": "Removed from favorites",
+    "NOT_FOUND": "Item not found in favorites"
+  },
+  "SLIDE": {
+    "CREATED": "Slide created successfully",
+    "UPDATED": "Slide updated successfully",
+    "DELETED": "Slide deleted successfully",
+    "NOT_FOUND": "Slide not found",
+    "UPDATE_STATUS": "Slide updated status successfully"
+  },
+  "TAG": {
+    "CREATED": "Tag created successfully",
+    "UPDATED": "Tag updated successfully",
+    "DELETED": "Tag deleted successfully",
+    "NOT_FOUND": "Tag not found",
+    "SAME_STATUS": "This status is the current status forr this tag.",
+    "UPDATE_STATUS": "Tag updated status successfully",
+    "ALREADY_DELETED": "This tag has already been deleted."
+  },
+  "VALIDATION_FAILED": "Validation failed",
+  "NOT_FOUND": "Not found",
+  "BAD_REQUEST": "Bad request",
+  "FORBIDDEN": "Forbidden",
+  "TOO_MANY_REQUESTS": "You have exceeded the maximum number of allowed requests. Try again later.",
+  "EMAIL_ALREADY_EXIST": "The email address is already registered.",
+  "PHONE_NUMBER_ALREADY_EXIST": "The phone number is already registered."
+}
