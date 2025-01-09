@@ -16,12 +16,12 @@ import { ThrottlerGuard } from '@nestjs/throttler';
   controllers: [AppController],
   providers: [
     AppService,
-    {
-      provide: 'FIREBASE_ADMIN_INIT',
-      useFactory: () => {
-        firebaseAdminInit();
-      },
-    },
+    // {
+    //   provide: 'FIREBASE_ADMIN_INIT',
+    //   useFactory: () => {
+    //     firebaseAdminInit();
+    //   },
+    // },
     // {
     //   provide: APP_GUARD,
     //   useClass: ThrottlerGuard,
