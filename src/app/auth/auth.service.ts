@@ -8,7 +8,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
-import { User } from 'src/schemas/user.schema';
+import { User, UserDocument } from 'src/schemas/user.schema';
 import { SignUpAuthDto } from './dto/create-auth.dto';
 import { LoginAuthDto } from './dto/login.dto';
 import { UserResponseDto } from './dto/user.response.dto';
@@ -16,6 +16,8 @@ import { resetPasswordDto } from './dto/resetPassword.dto';
 import { Verification } from 'src/schemas/verification.schema';
 import { NewPasswordDto } from './dto/new-password.dto';
 import { ForgetPasswordDto } from './dto/forgetPassword.dto';
+import { TokenService } from 'src/common/token/token.service';
+import { decode } from 'punycode';
 
 @Injectable()
 export class AuthService {
@@ -24,9 +26,10 @@ export class AuthService {
     @InjectModel(Verification.name)
     private verificationModel: Model<Verification>,
     private jwtService: JwtService,
+    private tokenService: TokenService,
   ) {}
 
-  async create(loginAuthDto: SignUpAuthDto) {
+  async createAdmin(loginAuthDto: SignUpAuthDto) {
     const { fullName, userName, email, password } = loginAuthDto;
 
     const existingEmailUser = await this.userModel.findOne({
@@ -54,6 +57,45 @@ export class AuthService {
       password: hashedPassword,
       fullName,
       userName,
+      role: 'admin',
+    });
+
+    await newUser.save();
+
+    return {
+      message: 'ADMIN.CREATED',
+    };
+  }
+
+  async createUser(loginAuthDto: SignUpAuthDto) {
+    const { fullName, userName, email, password } = loginAuthDto;
+
+    const existingEmailUser = await this.userModel.findOne({
+      email,
+      isDeleted: false,
+    });
+
+    if (existingEmailUser) {
+      throw new BadRequestException('EMAIL_EXIST');
+    }
+
+    const existingUserNameUser = await this.userModel.findOne({
+      userName,
+      isDeleted: false,
+    });
+
+    if (existingUserNameUser) {
+      throw new BadRequestException('USER_NAME_EXIST');
+    }
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    const newUser = new this.userModel({
+      email,
+      password: hashedPassword,
+      fullName,
+      userName,
+      role: 'user',
     });
 
     await newUser.save();
@@ -63,11 +105,47 @@ export class AuthService {
     };
   }
 
-  async login(loginAuthDto: LoginAuthDto, deviceId: string) {
+  async loginAdmin(loginAuthDto: LoginAuthDto, deviceId: string) {
     const { email, password } = loginAuthDto;
 
     const user = await this.userModel.findOne({
       $or: [{ email: email }, { userName: email }],
+      role: 'admin',
+      isDeleted: false,
+    });
+
+    if (!user) {
+      throw new UnauthorizedException('ADMIN.NOT_FOUND');
+    }
+
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+
+    if (!isPasswordValid) {
+      throw new UnauthorizedException('auth.errors.INVALIDE_INCREDENTIAL');
+    }
+
+    const payload = { email: user.email, _id: user._id, role: user.role };
+
+    const { accessToken, refreshToken } = await this.generateTokens(payload);
+
+    await this.tokenService.storeRefreshToken(
+      user._id.toString(),
+      refreshToken,
+    );
+
+    return {
+      accessToken,
+      refreshToken,
+      admin: new UserResponseDto(user),
+    };
+  }
+
+  async loginUser(loginAuthDto: LoginAuthDto, deviceId: string) {
+    const { email, password } = loginAuthDto;
+
+    const user = await this.userModel.findOne({
+      $or: [{ email: email }, { userName: email }],
+      role: 'user',
       isDeleted: false,
     });
 
@@ -81,14 +159,68 @@ export class AuthService {
       throw new UnauthorizedException('auth.errors.INVALIDE_INCREDENTIAL');
     }
 
-    const payload = { email: user.email, ـid: user._id, role: user.role };
+    const payload = { email: user.email, _id: user._id, role: user.role };
 
-    const token = this.jwtService.sign(payload);
+    const { accessToken, refreshToken } = await this.generateTokens(payload);
+
+    await this.tokenService.storeRefreshToken(
+      user._id.toString(),
+      refreshToken,
+    );
 
     return {
-      accessToken: token,
+      accessToken,
+      refreshToken,
       user: new UserResponseDto(user),
     };
+  }
+
+  async generateTokens(
+    user:any,
+  ): Promise<{ accessToken: string; refreshToken: string }> {
+    const payload = { _id: user._id, email: user.email };
+
+    const accessToken = this.jwtService.sign(payload, {
+      expiresIn: '30m',
+    });
+
+    const refreshToken = this.jwtService.sign(payload, {
+      expiresIn: '10d',
+    });
+
+    return { accessToken, refreshToken };
+  }
+
+  async refresh(
+    refreshToken: string,
+  ): Promise<{ accessToken: string; refreshToken: string }> {
+    try {
+      const decoded = this.jwtService.verify(refreshToken);
+
+      console.log(decoded);
+
+      const user = await this.userModel.findOne({ email: decoded.email });
+
+      if (!user) throw new UnauthorizedException('User not found');
+
+      console.log('dasdasdasdasdasdasd');
+
+      // Check if the refresh token is valid
+      const isValid = await this.tokenService.isRefreshTokenValid(
+        decoded._id,
+        refreshToken,
+      );
+      console.log('333333333');
+
+      if (!isValid) throw new UnauthorizedException('Invalid refresh token');
+
+      console.log('4444444');
+
+      // Generate new tokens
+      return this.generateTokens(user);
+    } catch (error) {
+      throw new UnauthorizedException('Invalid refresh token');
+    }
   }
 
   async resetPassword(userId: string, resetPassword: resetPasswordDto) {
@@ -154,9 +286,7 @@ export class AuthService {
     });
 
     if (!verification) {
-      throw new NotFoundException(
-        "VERIFICATION.VERIFICATION_TIMEOUT",
-      );
+      throw new NotFoundException('VERIFICATION.VERIFICATION_TIMEOUT');
     }
 
     // Check if the verification code is correct
@@ -166,7 +296,9 @@ export class AuthService {
     );
 
     if (!isMatch) {
-      throw new BadRequestException('VERIFICATION.VERIFICATION_CODE_NOT_CORRECT');
+      throw new BadRequestException(
+        'VERIFICATION.VERIFICATION_CODE_NOT_CORRECT',
+      );
     }
 
     return { message: 'VERIFICATION.VERIFICATION_SUCCEFULL' };

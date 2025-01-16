@@ -19,9 +19,31 @@ export class TokenService {
       return error
     }
   }
+
   async isTokenBlacklisted(token: string): Promise<boolean> {
     const tokenEntry = await this.tokenBlacklistModel.findOne({ token });
     return !!tokenEntry;
+  }
+
+  async storeRefreshToken(userId: string, token: string): Promise<void> {
+    const existingToken = await this.tokenBlacklistModel.findOne({ userId });
+
+    if (existingToken) {
+      // Update the existing token
+      existingToken.token = token;
+      existingToken.updatedAt = new Date();
+      await existingToken.save();
+    } else {
+      // Create a new token entry
+      const newToken = new this.tokenBlacklistModel({ userId, token, createdAt: new Date() });
+      await newToken.save();
+    }
+  }
+
+  async isRefreshTokenValid(userId: string, token: string): Promise<boolean> {
+    const storedToken = await this.tokenBlacklistModel.findOne({ userId, token });
+
+    return !!storedToken;
   }
 
   @Cron(CronExpression.EVERY_DAY_AT_MIDNIGHT)

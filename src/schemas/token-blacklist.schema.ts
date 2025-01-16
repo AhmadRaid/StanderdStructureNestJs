@@ -8,7 +8,16 @@ export class TokenBlacklist extends Document {
   token: string;
 
   @Prop({ required: true })
+  userId: string;
+
+  @Prop({  })
   expiresAt: Date;
+
+  @Prop({ default: Date.now })
+  createdAt: Date;
+
+  @Prop({ default: Date.now })
+  updatedAt: Date;
 }
 
 export const TokenBlacklistSchema =

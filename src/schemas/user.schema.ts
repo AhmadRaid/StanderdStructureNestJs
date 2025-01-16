@@ -2,10 +2,14 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Address } from 'cluster';
 import { Types } from 'mongoose';
 import { userStatus } from 'src/common/enum/userStatus.enum';
+
+export type UserDocument = User & Document & { _id: Types.ObjectId };
+
 @Schema({
   timestamps: true,
 })
 export class User {
+
   @Prop({ required: true, type: String })
   fullName: string;
 

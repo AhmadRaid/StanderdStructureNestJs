@@ -35,15 +35,26 @@ export class AuthController {
     private readonly jwtService: JwtService,
   ) {}
 
-  @Post('signup')
-  create(@Body() singUpAuthDto: SignUpAuthDto) {
-    return this.authService.create(singUpAuthDto);
+  @Post('admin/signup')
+  createAdmin(@Body() singUpAuthDto: SignUpAuthDto) {
+    return this.authService.createAdmin(singUpAuthDto);
   }
 
-  @Post('login')
-  login(@Body() loginAuthDto: LoginAuthDto,@Req() req:Request) {
+  @Post('user/signup')
+  createUser(@Body() singUpAuthDto: SignUpAuthDto) {
+    return this.authService.createUser(singUpAuthDto);
+  }
+
+  @Post('admin/login')
+  loginAdmin(@Body() loginAuthDto: LoginAuthDto, @Req() req: Request) {
     const deviceId = req.headers['device-id'];
-    return this.authService.login(loginAuthDto,deviceId);
+    return this.authService.loginAdmin(loginAuthDto, deviceId);
+  }
+
+  @Post('user/login')
+  loginUser(@Body() loginAuthDto: LoginAuthDto, @Req() req: Request) {
+    const deviceId = req.headers['device-id'];
+    return this.authService.loginUser(loginAuthDto, deviceId);
   }
 
   @UseGuards(JwtAuthGuard)
@@ -69,6 +80,11 @@ export class AuthController {
   @Post('generate-password')
   generatePassword(@Body() ForgetPasswordBody: NewPasswordDto) {
     return this.authService.generatePassword(ForgetPasswordBody);
+  }
+
+  @Post('refresh-token')
+  async refreshToken(@Body('refreshToken') refreshToken: string) {
+    return this.authService.refresh(refreshToken);
   }
 
   @UseGuards(JwtAuthGuard)

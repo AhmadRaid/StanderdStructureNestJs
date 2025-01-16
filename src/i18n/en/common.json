@@ -61,7 +61,8 @@
   "ADMIN": {
     "UPDATED": "Admin updated successfully",
     "NOT_FOUND": "Admin Not Found",
-    "SAME_DATA": "You Dont send any update data "
+    "SAME_DATA": "You Dont send any update data",
+    "CREATED": "Admin created successfully"
   },
   "PACKAGE": {
     "NOT_FOUND": "Package not found",
