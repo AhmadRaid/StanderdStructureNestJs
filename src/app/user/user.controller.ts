@@ -5,6 +5,7 @@ import {
   Patch,
   Post,
   Req,
+  UnauthorizedException,
   UploadedFile,
   UseGuards,
   UseInterceptors,
@@ -23,6 +24,17 @@ import { UpdateProfileDto } from './dto/update-profile.dto';
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
+  @Get('getUsers')
+  @UseGuards(JwtAuthGuard)
+  async getAllUser(@Req() req: AuthRequest) {
+    console.log('888888888898989');
+    
+    if(!req || req.user.role !== 'admin'){
+      throw new UnauthorizedException('Permission Denied !!')
+    }
+    return this.userService.getAllUsers();
+  }
+
   @Get('profile')
   async getProfileData(@Req() req: AuthRequest) {
     return this.userService.getProfileData(req.user._id);
@@ -37,4 +49,6 @@ export class UserController {
   ) {
     return this.userService.updateProfileData(req.user._id, image, updateData);
   }
+
+
 }

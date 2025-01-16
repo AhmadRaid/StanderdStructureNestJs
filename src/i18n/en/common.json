@@ -5,7 +5,7 @@
       "tokenNotFound": "Authentication token not found.",
       "tokenBlacklisted": "The provided token is blacklisted.",
       "invalidToken": "The token provided is invalid or expired.",
-      "adminNotFound": "Admin not found.",
+      "adminNotFound": "Unauthorized: Admin not found.",
       "userNotFound": "Unauthorized: User not found",
       "roleUnauthorized": "Unauthorized: You must have one of the following roles: {{args.roles}}.",
       "INVALIDE_INCREDENTIAL": "Login failed. Please check your email and password and try again"

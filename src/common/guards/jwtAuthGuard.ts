@@ -17,7 +17,7 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
     private readonly jwtService: JwtService,
     @InjectModel(User.name) private readonly userModel: Model<User>,
     private readonly tokenService: TokenService,
-    private readonly i18n: I18nService, 
+    private readonly i18n: I18nService,
   ) {
     super();
   }
@@ -27,13 +27,13 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
 
     const token = this.extractTokenFromHeader(request.headers.authorization);
 
-    await this.validateTokenNotBlacklisted(token);
+  //  await this.validateTokenNotBlacklisted(token);
 
     const decoded = this.verifyToken(token);
 
-    const user = await this.findUserById(decoded.ـid);
+    const admin = await this.findAdminById(decoded._id);
 
-    request.user = user;
+    request.user = admin;
 
     return true;
   }
@@ -47,39 +47,43 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
 
     const token = authorization.split(' ')[1];
     if (!token) {
-      throw new UnauthorizedException(
-        this.i18n.t('auth.errors.tokenNotFound'),
-      );
+      throw new UnauthorizedException(this.i18n.t('auth.errors.tokenNotFound'));
     }
 
     return token;
   }
 
-  private async validateTokenNotBlacklisted(token: string): Promise<void> {
-    const isBlacklisted = await this.tokenService.isTokenBlacklisted(token);
-    if (isBlacklisted) {
-      throw new UnauthorizedException(
-        this.i18n.t('auth.errors.tokenBlacklisted'),
-      );
-    }
-  }
+  // private async validateTokenNotBlacklisted(token: string): Promise<void> {
+  //   const isBlacklisted = await this.tokenService.isTokenBlacklisted(token);
+  //   if (isBlacklisted) {
+  //     throw new UnauthorizedException(
+  //       this.i18n.t('auth.errors.tokenBlacklisted'),
+  //     );
+  //   }
+  // }
 
   private verifyToken(token: string): any {
     try {
       return this.jwtService.verify(token);
     } catch (err) {
-      throw new UnauthorizedException(
-        this.i18n.t('auth.errors.invalidToken'),
-      );
+      throw new UnauthorizedException(this.i18n.t('auth.errors.invalidToken'));
     }
   }
 
   private async findUserById(userId: string): Promise<User> {
-    const user = await this.userModel.findOne({ _id: userId });
+    const user = await this.userModel.findOne({ _id: userId, role: 'user' });
     if (!user) {
-      throw new UnauthorizedException(
-        this.i18n.t('auth.errors.userNotFound'),
-      );
+      throw new UnauthorizedException(this.i18n.t('auth.errors.userNotFound'));
+    }
+    return user;
+  }
+
+  private async findAdminById(userId: string): Promise<User> {
+    console.log(userId);
+    
+    const user = await this.userModel.findOne({ _id: userId, role: 'admin' });
+    if (!user) {
+      throw new UnauthorizedException(this.i18n.t('auth.errors.adminNotFound'));
     }
     return user;
   }

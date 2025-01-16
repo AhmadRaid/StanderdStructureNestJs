@@ -162,8 +162,6 @@ export class AuthService {
     try {
       const decoded = this.jwtService.verify(refreshToken);
 
-      console.log(decoded);
-
       const user = await this.userModel.findOne({ email: decoded.email });
 
       if (!user) throw new UnauthorizedException('User not found');

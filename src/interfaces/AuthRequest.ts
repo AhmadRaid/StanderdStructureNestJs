@@ -8,7 +8,8 @@ export interface AuthRequest extends Request {
     // Add other header properties as needed
   } & Request['headers'];
   user: {
-    _id?: string
+    _id?: string,
+    role:string
   };
   lang: string
 }
