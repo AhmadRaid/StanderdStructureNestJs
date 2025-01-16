@@ -29,43 +29,43 @@ export class AuthService {
     private tokenService: TokenService,
   ) {}
 
-  async createAdmin(loginAuthDto: SignUpAuthDto) {
-    const { fullName, userName, email, password } = loginAuthDto;
+  // async createAdmin(loginAuthDto: SignUpAuthDto) {
+  //   const { fullName, userName, email, password } = loginAuthDto;
 
-    const existingEmailUser = await this.userModel.findOne({
-      email,
-      isDeleted: false,
-    });
+  //   const existingEmailUser = await this.userModel.findOne({
+  //     email,
+  //     isDeleted: false,
+  //   });
 
-    if (existingEmailUser) {
-      throw new BadRequestException('EMAIL_EXIST');
-    }
+  //   if (existingEmailUser) {
+  //     throw new BadRequestException('EMAIL_EXIST');
+  //   }
 
-    const existingUserNameUser = await this.userModel.findOne({
-      userName,
-      isDeleted: false,
-    });
+  //   const existingUserNameUser = await this.userModel.findOne({
+  //     userName,
+  //     isDeleted: false,
+  //   });
 
-    if (existingUserNameUser) {
-      throw new BadRequestException('USER_NAME_EXIST');
-    }
+  //   if (existingUserNameUser) {
+  //     throw new BadRequestException('USER_NAME_EXIST');
+  //   }
 
-    const hashedPassword = await bcrypt.hash(password, 10);
+  //   const hashedPassword = await bcrypt.hash(password, 10);
 
-    const newUser = new this.userModel({
-      email,
-      password: hashedPassword,
-      fullName,
-      userName,
-      role: 'admin',
-    });
+  //   const newUser = new this.userModel({
+  //     email,
+  //     password: hashedPassword,
+  //     fullName,
+  //     userName,
+  //     role: 'admin',
+  //   });
 
-    await newUser.save();
+  //   await newUser.save();
 
-    return {
-      message: 'ADMIN.CREATED',
-    };
-  }
+  //   return {
+  //     message: 'ADMIN.CREATED',
+  //   };
+  // }
 
   async createUser(loginAuthDto: SignUpAuthDto) {
     const { fullName, userName, email, password } = loginAuthDto;
@@ -95,7 +95,6 @@ export class AuthService {
       password: hashedPassword,
       fullName,
       userName,
-      role: 'user',
     });
 
     await newUser.save();
@@ -105,47 +104,13 @@ export class AuthService {
     };
   }
 
-  async loginAdmin(loginAuthDto: LoginAuthDto, deviceId: string) {
+
+
+  async login(loginAuthDto: LoginAuthDto, deviceId: string) {
     const { email, password } = loginAuthDto;
 
     const user = await this.userModel.findOne({
       $or: [{ email: email }, { userName: email }],
-      role: 'admin',
-      isDeleted: false,
-    });
-
-    if (!user) {
-      throw new UnauthorizedException('ADMIN.NOT_FOUND');
-    }
-
-    const isPasswordValid = await bcrypt.compare(password, user.password);
-
-    if (!isPasswordValid) {
-      throw new UnauthorizedException('auth.errors.INVALIDE_INCREDENTIAL');
-    }
-
-    const payload = { email: user.email, _id: user._id, role: user.role };
-
-    const { accessToken, refreshToken } = await this.generateTokens(payload);
-
-    await this.tokenService.storeRefreshToken(
-      user._id.toString(),
-      refreshToken,
-    );
-
-    return {
-      accessToken,
-      refreshToken,
-      admin: new UserResponseDto(user),
-    };
-  }
-
-  async loginUser(loginAuthDto: LoginAuthDto, deviceId: string) {
-    const { email, password } = loginAuthDto;
-
-    const user = await this.userModel.findOne({
-      $or: [{ email: email }, { userName: email }],
-      role: 'user',
       isDeleted: false,
     });
 

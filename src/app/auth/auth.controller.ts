@@ -35,26 +35,18 @@ export class AuthController {
     private readonly jwtService: JwtService,
   ) {}
 
-  @Post('admin/signup')
-  createAdmin(@Body() singUpAuthDto: SignUpAuthDto) {
-    return this.authService.createAdmin(singUpAuthDto);
-  }
 
-  @Post('user/signup')
+
+  @Post('signup')
   createUser(@Body() singUpAuthDto: SignUpAuthDto) {
     return this.authService.createUser(singUpAuthDto);
   }
 
-  @Post('admin/login')
-  loginAdmin(@Body() loginAuthDto: LoginAuthDto, @Req() req: Request) {
-    const deviceId = req.headers['device-id'];
-    return this.authService.loginAdmin(loginAuthDto, deviceId);
-  }
 
-  @Post('user/login')
+  @Post('login')
   loginUser(@Body() loginAuthDto: LoginAuthDto, @Req() req: Request) {
     const deviceId = req.headers['device-id'];
-    return this.authService.loginUser(loginAuthDto, deviceId);
+    return this.authService.login(loginAuthDto, deviceId);
   }
 
   @UseGuards(JwtAuthGuard)
